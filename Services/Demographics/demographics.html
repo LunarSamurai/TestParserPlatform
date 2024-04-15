@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Test Screen</title>
+    <link rel="stylesheet" href="css/demographics.css"> <!-- Adjust the path as necessary -->
+</head>
+<body>  
+<div id="questionContainer" class="questionContainer"> 
+
+    <p class="questionText">Please provide your demographic details:</p>
+
+<div class="formContainer">
+    <form id="demographicForm" action="../OpenEndedQuestions/OpenEndedPrompts/openEndedPromptService.html" method="GET">
+        <h2>Demographic Form</h2>
+    
+        <label for="rank">Rank:</label>
+        <input type="text" id="rank" name="rank"><br><br>
+    
+        <label for="mosBranch">MOS/Branch:</label>
+        <input type="text" id="mosBranch" name="mosBranch"><br><br>
+    
+        <label for="age">Age:</label>
+        <input type="number" id="age" name="age"><br><br>
+    
+        <label for="education">Highest level of education:</label>
+        <select id="education" name="education">
+            <option value="">Select Level</option>
+            <option value="bachelor">Bachelor's Degree</option>
+            <option value="some-graduate">Some Graduate-Level Credit</option>
+            <option value="graduate">Graduate-Level Degree</option>
+            <option value="other">Other</option>
+        </select>
+        <input type="text" id="otherEducation" name="otherEducation" style="display: none;" placeholder="Please specify"><br><br>
+    
+        <fieldset>
+            <legend>Commissioning Source:</legend>
+            <input type="checkbox" id="usma" name="commissioningSource" value="USMA">
+            <label for="usma">USMA</label><br>
+            <input type="checkbox" id="rotc" name="commissioningSource" value="ROTC">
+            <label for="rotc">ROTC</label><br>
+            <input type="checkbox" id="ocs" name="commissioningSource" value="OCS">
+            <label for="ocs">OCS</label><br>
+            <input type="checkbox" id="otherCommission" name="commissioningSource" value="Other">
+            <label for="otherCommission">Other</label>
+        </fieldset><br>
+    
+        <label for="lastCompletedPME">Last Completed PME (e.g., OCS, IBOCL):</label>
+        <input type="text" id="lastCompletedPME" name="lastCompletedPME"><br><br>
+    
+        <label for="totalLengthService">Total Length of Time in the Army (years/months):</label>
+        <input type="text" id="totalLengthService" name="totalLengthService"><br><br>
+    
+        <label for="leadershipPositions">Outside of course leadership positions, what, if any, leadership positions have you been assigned since joining the Army?</label>
+        <textarea id="leadershipPositions" name="leadershipPositions"></textarea><br><br>
+    
+        <label>Are you prior service?</label>
+        <input type="radio" id="priorServiceNo" name="priorService" value="no" onclick="togglePriorServiceFields()" checked>
+        <label for="priorServiceNo">No</label>
+        <input type="radio" id="priorServiceYes" name="priorService" value="yes" onclick="togglePriorServiceFields()">
+        <label for="priorServiceYes">Yes (if checked, please see questions below)</label><br><br>
+    
+        <div id="priorServiceFields" style="display: none;">
+            <label for="lengthOfService">Length of Prior Service Time:</label>
+            <input type="text" id="lengthOfService" name="lengthOfService"><br><br>
+    
+            <label for="priorServiceBranch">Military Branch (e.g., Army, Marine Corps):</label>
+            <input type="text" id="priorServiceBranch" name="priorServiceBranch"><br><br>
+    
+            <label for="previousRank">Previous Rank:</label>
+            <input type="text" id="previousRank" name="previousRank"><br><br>
+    
+            <label for="lastHeldDutyPosition">Last Held Duty Position (e.g., Team member, Team Leader, Squad Leader):</label>
+            <input type="text" id="lastHeldDutyPosition" name="lastHeldDutyPosition"><br><br>
+    
+            <label for="totalDeployments">Total Number of Deployments:</label>
+            <input type="number" id="totalDeployments" name="totalDeployments"><br><br>
+        </div>
+        <input type="submit" value="Submit">
+    </form>
+
+    <script src="/demographics.js"></script>
+        
+</body>
+</html>

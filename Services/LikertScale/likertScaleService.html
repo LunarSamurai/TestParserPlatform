@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Likert Scale Survey</title>
+    <link rel="stylesheet" href="../../css/likertScaleService.css">
+</head>
+<body>
+    <div class="survey-container" >
+        <form class = "likertForm" id="likertForm" action ="LikertScalePrompt/likertPromptService.html" method="GET">
+            <div class="prompt">
+                <p>Thinking on the current scenario, and answer the following questions:</p>
+            </div>
+            <!-- Likert scale section -->
+            <div class="likert-question">
+                <p>2. Please respond to the next three statements using a 1 (Strongly Disagree) to 5 (Strongly Agree) scale:</p>
+                <label for="question1a">a. There was a high level of threat in this situation.</label>
+                <div class="likert-scale" id="question1a">
+                    <!-- Generate scale options dynamically or statically -->
+                    <!-- Example of one statically: -->
+                    <input type="radio" name="question1a" value="1"> 1
+                    <input type="radio" name="question1a" value="2"> 2
+                    <input type="radio" name="question1a" value="3"> 3
+                    <input type="radio" name="question1a" value="4"> 4
+                    <input type="radio" name="question1a" value="5"> 5
+                </div>
+                <label for="question1b">b. There was a high level of time pressure in this situation.</label>
+                <div class="likert-scale" id="question1b">
+                    <!-- Generate scale options dynamically or statically -->
+                    <!-- Example of one statically: -->
+                    <input type="radio" name="question1b" value="1"> 1
+                    <input type="radio" name="question1b" value="2"> 2
+                    <input type="radio" name="question1b" value="3"> 3
+                    <input type="radio" name="question1b" value="4"> 4
+                    <input type="radio" name="question1b" value="5"> 5
+                </div>
+                <label for="question1c">a. There was competing pressure from multiple levels of leadership in this situation.</label>
+                <div class="likert-scale" id="question1c">
+                    <!-- Generate scale options dynamically or statically -->
+                    <!-- Example of one statically: -->
+                    <input type="radio" name="question1c" value="1"> 1
+                    <input type="radio" name="question1c" value="2"> 2
+                    <input type="radio" name="question1c" value="3"> 3
+                    <input type="radio" name="question1c" value="4"> 4
+                    <input type="radio" name="question1c" value="5"> 5
+                </div>
+                <!-- Repeat for other Likert questions -->
+            </div>
+            <button type="submit">Submit Responses</button>
+        </form>
+    </div>
+    <script src="likertScaleService.js"></script>
+</body>
+</html>
