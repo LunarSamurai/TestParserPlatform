@@ -3,7 +3,8 @@ const path = require('path');
 
 contextBridge.exposeInMainWorld('electronApi', {
     getAppPath: () => path.join(__dirname),
-    saveFormData: (formString) => ipcRenderer.invoke('save-form-data', formString)
+    saveFormData: (formString) => ipcRenderer.invoke('save-form-data', formString),
+    loadSliders: () => ipcRenderer.invoke('load-sliders')
 });
 
 console.log("Preload script is running", "The path is: ", path.join(__dirname, 'preload.js'));

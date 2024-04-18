@@ -64,3 +64,10 @@ document.addEventListener('DOMContentLoaded', () => {
     togglePriorServiceFields();
 });
 
+document.addEventListener('DOMContentLoaded', () => {
+    window.electronAPI.loadSliders()
+        .then((data) => {
+            console.log(data); // Use this data to populate sliders
+        })
+        .catch(err => console.error(err));
+});

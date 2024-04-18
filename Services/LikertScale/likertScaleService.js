@@ -15,4 +15,5 @@ function handleSubmit(event) {
 
     console.log('Survey responses:', responses);
     // Here you could send the data to a server or process it further
+    window.location.href = 'LikertScalePrompt/likertPromptService.html';
 }

@@ -94,6 +94,20 @@ ipcMain.handle('get-prompt', async () => {
     return prompts;
 });
 
+ipcMain.handle('load-sliders', async () => {
+    const promptDir = path.join(__dirname, 'Resources/SliderPrompts');
+    const files = await fs.promises.readdir(promptDir);
+    const sliderPrompts = await Promise.all(files.map(async (file) => {
+        const filePath = path.join(promptDir, file);
+        const content = await fs.promises.readFile(filePath, { encoding: 'utf-8' });
+        return {
+            name: file, // Include the file name
+            content: content // The actual content of the file
+        };
+    }));
+    return sliderPrompts; // Whatever you need to return
+});
+
 ipcMain.handle('get-likert-prompt', async () => {
     const promptDir = path.join(__dirname, 'Resources/LikertQuestions/LikertPrompts');
     const files = await fs.promises.readdir(promptDir);

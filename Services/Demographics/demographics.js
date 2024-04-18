@@ -49,14 +49,20 @@ function handleSubmit(event) {
     console.log(data); // Here, handle the data object as needed, e.g., send it to a server
 
     // Redirect to test.html
-    window.location.href = 'test.html';
+    window.location.href = "../OpenEndedQuestions/OpenEndedPrompts/openEndedPromptService.html";
 }
 
 // Ensure the form submission is hooked up correctly
 document.querySelector('#demographicForm').addEventListener('submit', handleSubmit);
 
-function togglePriorServiceFields() {
-    var isPriorServiceChecked = document.getElementById('priorServiceYes').checked;
+document.addEventListener('DOMContentLoaded', function() {
+    // This ensures the DOM is fully loaded before attaching event handlers.
+
+    var checkbox = document.getElementById('priorServiceYes');
     var priorServiceFields = document.getElementById('priorServiceFields');
-    priorServiceFields.style.display = isPriorServiceChecked ? 'block' : 'none';
-}
+
+    checkbox.addEventListener('change', function() {
+        // This toggles the display based on the checkbox state.
+        priorServiceFields.style.display = checkbox.checked ? 'block' : 'none';
+    });
+});

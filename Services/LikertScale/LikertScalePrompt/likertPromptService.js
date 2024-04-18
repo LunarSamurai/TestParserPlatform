@@ -41,19 +41,21 @@ function displayPrompt(index) {
 function saveResponseAndNext() {
     const responseInput = document.getElementById('responseInput');
     responses.push({ prompt: prompts[currentPromptIndex], response: responseInput.value });
-    sessionStorage.setItem('currentLikertPromptIndex', currentPromptIndex.toString());
     currentPromptIndex++;
-    if (currentPromptIndex >= prompts.length) {
-        window.location.href = '../likertScaleService.html';
-    }
+    sessionStorage.setItem('currentLikertPromptIndex', currentPromptIndex.toString());
+    window.location.href = '../likertScaleService.html';
     displayPrompt(currentPromptIndex);
+    if (currentPromptIndex >= prompts.length) {
+        // If there are no more questions, finish the exam and redirect
+        finishExam();
+    }
 }
 
 
 
 function finishExam() {
     console.log('Prompt is Finished');
-    // Additional logic for finishing the exam
+    window.location.href = '../../Slider/SliderService.html'; // Temporary Until Modularity/Only for build 1.0
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -61,8 +63,4 @@ document.addEventListener('DOMContentLoaded', () => {
     currentPromptIndex = parseInt(sessionStorage.getItem('currentLikertPromptIndex')) || 0;
     loadPrompts();
     document.getElementById('nextPrompt').addEventListener('click', saveResponseAndNext);
-    if (currentPromptIndex >= prompts.length) {
-        // If there are no more questions, finish the exam and redirect
-        finishExam();
-    }
 });
