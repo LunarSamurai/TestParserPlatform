@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Results</title>
+    <link rel="stylesheet" href="../../css/getResults.css"> <!-- Adjust the path as necessary -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body> 
+  <div id="resultsContainer" class="resultsContainer">
+    <h1 class="resultsTitle">Results Menu</h1>
+  </div>
+  <div id="results-menu" class="results-menu">
+    <nav class="menu">
+      <input id="menu-toggler" class="menu-toggler" type="checkbox" checked>
+      <label for="menu-toggler"></label>      
+        <ul>
+          <li class="menu-item">
+            <a class="fa-solid fa-filter" href="">
+              <span class="hover-text">Select View</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a class="fa-solid fa-eye" href="#">
+              <span class="hover-text">View All</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a class="fa-solid fa-download" href="#" onclick="handleDownloadClick()">
+              <span class="hover-text">Download</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a class="fa-solid fa-eraser"href="#" onclick="handleEraseClick()">
+              <span class="hover-text">Erase All</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a class ="fa-solid fa-house" href="#" onclick="handleHomeClick()">
+              <span class="hover-text">Return</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    <script src="getResults.js"></script>
+</body>
+</html>

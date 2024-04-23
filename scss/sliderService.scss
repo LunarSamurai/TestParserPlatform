@@ -23,47 +23,31 @@ body {
     border-radius: 8px;
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
     padding: 20px;
+    height: 900px;
     width: 1050px;
     max-width: 90%;
+
   }
 
   .questionTextContainer {
     font-size: clamp(24px, 5vw, 38px);
-    width: 1000px;
-    height: 250px;
-    max-height: 90%;
+    width: 1000px; /* Adjust width as necessary */
+    height: 750px; /* Adjust based on actual slider height including margins */
+    max-height: 90%; /* Ensure this does not conflict with your height */
     max-width: 90%;
-    padding-bottom: 25px;
+    padding: 25px; /* Adjust padding */
     margin-bottom: 25px;
-    overflow: auto;
-  }
+    overflow: auto; /* Scroll only if necessary */
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between; /* This spreads out the sliders evenly */
+}
+
   
   .questionText {
     font-size: clamp(15px, 5vw, 38px); /* Adjust values as needed */
     margin-bottom: 20px;
   }  
-  
-  .responseContainer {
-    margin-bottom: 20px;
-}
-
-.responseInput {
-    width: 100%;
-    padding: 15px;
-    font-size: 16px;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    box-sizing: border-box;
-    min-height: 200px; /* Minimum height to start */
-    max-height: 400px; /* Maximum height, adjust as needed */
-    resize: vertical; /* Allow vertical resizing */
-}
-
-
-/* Center the placeholder text */
-.responseInput::placeholder {
-    text-align: center;
-}
 
   .nextQuestion {
     background-color: #007bff;
@@ -74,9 +58,89 @@ body {
     border-radius: 8px;
     cursor: pointer;
     width: 100%;
+    margin-top: 50px;
+    margin-bottom: 20px;
   }
   
   .nextQuestion:hover {
     background-color: #0056b3;
   }
+
+  .saveButton{
+    background-color: #007bff;
+    color: #fff;
+    border: none;
+    padding: 15px;
+    font-size: 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 50px;
+    margin-bottom: 20px;
+  }
   
+  .saveButton:hover{
+    background-color: #0056b3;
+  }
+
+  .sliderContainer {
+    height: 350px;
+  }
+
+  .slider {
+    -webkit-appearance: none;  /* Override default CSS styles */
+    appearance: none;
+    width: 100%; /* Full-width - Feel free to adjust */
+    height: 25px; /* Specified height */
+    background: #ddd; /* Grey background */
+    outline: none; /* Remove outline */
+    opacity: 0.7; /* Set transparency (cross-browser) */
+    transition: opacity .2s;
+}
+
+.slider:hover {
+    opacity: 1; /* Fully opaque on hover */
+}
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    appearance: none;
+    width: 20px; /* Make the thumb a circle */
+    height: 20px;
+    background: #4CAF50; /* Thumb color */
+    border-radius: 50%; /* Circular shape */
+    cursor: pointer;
+    box-shadow: 0 0 4px #000; /* Optional: Shadow for better visibility */
+    border: 2px solid #fff; /* Optional: Border for more definition */
+}
+
+
+.slider::-webkit-slider-runnable-track {
+    width: 100%;
+    height: 25px;
+    cursor: pointer;
+    animate: 0.2s;
+    box-shadow: 1px 1px 1px #000000, 0px 0px 1px #0D0D0D;
+    background: #3071A9;
+    border-radius: 1.3px;
+    border: 0.2px solid #010101;
+}
+
+/* Firefox styles */
+.slider::-moz-range-thumb {
+    width: 25px;
+    height: 25px;
+    background: #4CAF50;
+    cursor: pointer;
+}
+
+.slider::-moz-range-track {
+    width: 100%;
+    height: 15px;
+    cursor: pointer;
+    background: #3071A9;
+}
+
+.slider:not(:last-child) {
+    margin-bottom: 10px; /* Adjust this value to increase/decrease space between sliders */
+}

@@ -1,12 +1,14 @@
-const appPath = window.electronApi.getAppPath();
-console.log('Application path:', appPath);
-
-// Assuming electronApi and mainMenu are exposed correctly to the renderer process
-
 document.addEventListener('DOMContentLoaded', () => {
     const appPath = window.electronApi.getAppPath();
     console.log('Application path:', appPath);
 
+    setupActionButtons();
+    setupPriorServiceFields();
+    loadSliders();
+    setupFormInteractions();
+});
+
+function setupActionButtons() {
     const actions = {
         'lefter': 'view-results',
         'left': 'upload',
@@ -15,41 +17,15 @@ document.addEventListener('DOMContentLoaded', () => {
         'righter': 'options'
     };
 
-    // Set up event listeners for action buttons
     Object.entries(actions).forEach(([className, action]) => {
         const element = document.querySelector(`.${className}`);
         if (element) {
             element.addEventListener('click', () => window.mainMenu.sendAction(action));
         }
     });
+}
 
-    // Set up the form and its submission handling
-    const form = document.getElementById('demographicForm');
-    form.addEventListener('submit', handleSubmit);
-
-    function handleSubmit(event) {
-        event.preventDefault();
-        const formData = new FormData(event.target);
-        let formObject = {};
-        formData.forEach((value, key) => {
-            formObject[key] = value;
-        });
-        const formString = JSON.stringify(formObject, null, 2);
-
-        // Use IPC to send the form data to the main process
-        window.electronApi.send('save-form-data', formString);
-    }
-
-    // Listen for the save result from the main process
-    window.electronApi.receive('form-data-save-response', (status) => {
-        if (status === 'success') {
-            alert('Form data saved successfully!');
-        } else {
-            alert('An error occurred while saving the form data.');
-        }
-    });
-
-    // Handle toggling of prior service fields based on radio button selection
+function setupPriorServiceFields() {
     const priorServiceYes = document.getElementById('priorServiceYes');
     const priorServiceFields = document.getElementById('priorServiceFields');
 
@@ -57,17 +33,54 @@ document.addEventListener('DOMContentLoaded', () => {
         priorServiceFields.style.display = priorServiceYes.checked ? 'block' : 'none';
     }
 
-    // Add change event listener to the prior service radio button
     priorServiceYes.addEventListener('change', togglePriorServiceFields);
-
-    // Call the function to set the initial state of the prior service fields
     togglePriorServiceFields();
-});
+}
 
-document.addEventListener('DOMContentLoaded', () => {
+function loadSliders() {
     window.electronAPI.loadSliders()
-        .then((data) => {
-            console.log(data); // Use this data to populate sliders
-        })
-        .catch(err => console.error(err));
-});
+        .then(data => console.log(data)) // Use this data to populate sliders
+        .catch(handleError);
+}
+
+function setupFormInteractions() {
+    const formData = {}; // Ensure formData is defined properly
+    const dateID = ''; // Ensure dateID is defined properly
+    const responses = {}; // Ensure responses are defined properly
+
+    window.api.saveFormData(formData)
+        .then(response => console.log(response))
+        .catch(handleError);
+
+    window.api.saveResponses({ dateID, responses })
+        .then(result => console.log(result))
+        .catch(handleError);
+
+    window.api.saveLikertResponses({ dateID, responses })
+        .then(result => console.log(result))
+        .catch(handleError);
+
+    window.api.fetchOpenEndedResponses({ dateID, responses })
+        .then(result => console.log(result))
+        .catch(handleError);
+
+    window.api.getOpenEndedResponses({ dateID, responses })
+        .then(result => console.log(result))
+        .catch(handleError);
+
+    window.api.saveOpenEndedResponses({ dateID, responses })
+        .then(result => console.log(result))
+        .catch(handleError);
+
+    window.api.saveCombinedResponses({ dateID, responses })
+        .then(result => console.log(result))
+        .catch(handleError);
+
+    window.api.invoke('save-to-file', { test: 'Hello from Renderer' })
+        .then(response => console.log('Test IPC response:', response))
+        .catch(error => console.error('Test IPC error:', error));
+    }
+
+function handleError(error) {
+    console.error("Error:", error);
+}

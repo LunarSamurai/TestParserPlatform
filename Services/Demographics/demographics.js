@@ -34,23 +34,28 @@ function handleSubmit(event) {
         data[key] = value;
     }
     
-    // Handle checkbox group for commissioningSource differently to get all checked values
     const commissioningSources = [];
     document.querySelectorAll('input[name="commissioningSource"]:checked').forEach(checkbox => {
         commissioningSources.push(checkbox.value);
     });
     data.commissioningSource = commissioningSources;
     
-    // If 'other' education is selected, add that value instead
     if (data.education === 'other') {
         data.education = formData.get('otherEducation');
     }
-    
-    console.log(data); // Here, handle the data object as needed, e.g., send it to a server
 
-    // Redirect to test.html
-    window.location.href = "../OpenEndedQuestions/OpenEndedPrompts/openEndedPromptService.html";
+    // IPC call to main process to handle form data
+    window.api.saveFormData(JSON.stringify(data))
+        .then(response => {
+            console.log("Response from main process:", response);
+            // Redirect on successful response
+            window.location.href = "../OpenEndedQuestions/OpenEndedPrompts/openEndedPromptService.html";
+        })
+        .catch(error => {
+            console.error("Error sending form data via IPC:", error);
+        });
 }
+
 
 // Ensure the form submission is hooked up correctly
 document.querySelector('#demographicForm').addEventListener('submit', handleSubmit);

@@ -1,10 +1,6 @@
 let currentPromptIndex = 0;
 let prompts = [];
 
-const myPath = window.nodePath.join('this', 'is', 'a', 'path');
-console.log(myPath);
-
-
 async function loadPrompts() {
     prompts = await window.api.getPrompt();
     sessionStorage.setItem('amountOfPrompts', prompts.length);

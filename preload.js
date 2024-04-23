@@ -3,8 +3,6 @@ const path = require('path');
 
 contextBridge.exposeInMainWorld('electronApi', {
     getAppPath: () => path.join(__dirname),
-    saveFormData: (formString) => ipcRenderer.invoke('save-form-data', formString),
-    loadSliders: () => ipcRenderer.invoke('load-sliders')
 });
 
 console.log("Preload script is running", "The path is: ", path.join(__dirname, 'preload.js'));
@@ -22,7 +20,10 @@ contextBridge.exposeInMainWorld('api', {
     getQuestions: () => ipcRenderer.invoke('get-questions'),
     getPrompt: () => ipcRenderer.invoke('get-prompt'),
     getLikertPrompt: () => ipcRenderer.invoke('get-likert-prompt'),
-    // Other methods
+    loadSliders: () => ipcRenderer.invoke('load-sliders'),
+    saveFormData: (formString) => ipcRenderer.invoke('save-form-data', formString),
+    getDateID: () => ipcRenderer.invoke('getDateID'),
+    invoke: (channel, data) => ipcRenderer.invoke(channel, data)    // Other methods
 });
 
 console.log("Preload script finished executing");
