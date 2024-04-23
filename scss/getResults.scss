@@ -1,21 +1,16 @@
 body {
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    margin: 0;
-    padding: 0;
-}
-
-body {
     font-family: 'Raleway', sans-serif;
     background-image: radial-gradient(circle at center, #899Dc4, #495D84);
     background-size: cover;
     background-repeat: no-repeat;
     height: 100vh;
     overflow: hidden;
-    display: flex;
-    justify-content: center;
-    align-items: center;
     background: radial-gradient(ellipse at bottom, #352e1b, #091107);
     font-weight: 300;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
   }
 
 .resultsContainer {
@@ -32,9 +27,6 @@ body {
     text-shadow: 0 0 8px rgba(255, 255, 255, 0.8); /* Adds a glow effect for better visibility */
     margin: 20px 0; /* Adds some space above and below the title */
 }
-
-
-
   .menu-toggler {
     position: absolute;
     display: block;
@@ -170,6 +162,25 @@ body {
     transform: scale(1);
     pointer-events: auto; /* Now interactive */
   }
+
+.menu-toggler-description{
+    color: white;
+    margin: auto;
+    margin-top: 100px;
+}
+
+/* Hide the description when the toggler is checked */
+.menu-toggler:checked ~ .menu-toggler-description {
+    display: none;
+}
+
+/* Ensure the description is visible by default */
+.menu-toggler-description {
+    display: block;  /* or 'inline', depending on your layout needs */
+    transition: opacity 0.5s ease; /* Optional: add a fade effect */
+
+}
+
 
 .menu-item a {
     display: flex;
@@ -327,4 +338,46 @@ body {
     background-color: #135ab7; /* A darker shade of blue on hover */
   }
 
-  
+.permission-modal {
+    display: none;
+    justify-content: center; // Center horizontally
+    align-items: center; // Center vertically
+    position: absolute; // Cover the entire viewport
+    top: 0;
+    left: 0;
+    width: 100%; // Full width
+    height: 100%; // Full height
+    background-color: rgba(0, 0, 0, 0.4); // Semi-transparent background
+    z-index: 1000; // High z-index to ensure it's above other content
+}
+
+    .permission-modal-content {
+        background-color: #fff;
+        padding: 2em;
+        top:0;
+        bottom:0;
+        right:0;
+        left:0;
+        margin: auto;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+        max-width: 500px; // Maximum width for the modal
+        transition: opacity 0.3s ease, transform 0.3s ease-out;
+        opacity: 1; // Start fully visible
+        display: block; // Ensures it behaves as expected in flex container
+    }
+
+    .permission-modal-ok {
+        padding: 10px 20px;
+        color: white;
+        background-color: #1a73e8; // Google blue
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        margin-top: 20px;
+    }
+
+    .permission-modal-ok:hover {
+        background-color: #135ab7;
+    }
+

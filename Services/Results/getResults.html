@@ -13,7 +13,8 @@
   <div id="results-menu" class="results-menu">
     <nav class="menu">
       <input id="menu-toggler" class="menu-toggler" type="checkbox">
-      <label for="menu-toggler" class="menu-toggler-label"></label>      
+      <label for="menu-toggler" class="menu-toggler-label"></label>
+      <!--<p class="menu-toggler-description">Click here</p>-->
         <ul>
           <li class="menu-item">
             <a class="fa-solid fa-filter" href="">
@@ -50,6 +51,31 @@
           <p id="fileContents"></p>
       </div>
     </div>
+    <div id="permissionModal" class="permission-modal">
+      <div class="permission-modal-content">
+        <div class="permission-text">
+          <p>Permission Denied, Contact your System Administrator.</p>
+          <button id="okButton" class="permission-modal-ok">Okay</button>
+        </div>
+      </div>
+    </div>
     <script src="getResults.js"></script>
+    <script>
+      window.onload = function() {
+        // Check if the user is marked as an admin in sessionStorage
+        if (sessionStorage.getItem("isAdmin") !== "true") {
+          var permissionModal = document.getElementById("permissionModal");
+          var okButton = document.getElementById("okButton");
+          
+          // Show the permission denied modal
+          permissionModal.style.display = "block";
+    
+          // Handle the Okay button click
+          okButton.onclick = function() {
+            window.location.href = "../../index.html"; // Redirect to the home page
+          };
+        }
+      };
+    </script>
 </body>
 </html>

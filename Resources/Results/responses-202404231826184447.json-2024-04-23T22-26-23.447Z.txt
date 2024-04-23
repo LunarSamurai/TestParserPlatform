@@ -1,0 +1,1 @@
+[{"openEndedResponse":[{"prompt":"Prompt1","response":"I would do everything that i need to do in order to servive"}],"likertResponse":{"question1a":"1","question1b":"3","question1c":"3"}}]

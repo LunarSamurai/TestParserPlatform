@@ -1,5 +1,6 @@
 function handleHomeClick(){
     window.location.href = "../../index.html";
+    sessionStorage.clear("isAdmin");
 }
 
 async function handleDownloadClick() {

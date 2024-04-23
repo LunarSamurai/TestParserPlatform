@@ -72,7 +72,11 @@ ipcMain.on('action', (event, action) => {
             break;
         case 'admin-login':
             console.log('Admin logging in...');
-            // Implement admin login
+            if (mainWindow) {
+                mainWindow.loadFile('Services/AdminLogin/adminLoginService.html'); // Load test.html in mainWindow
+            } else {
+                console.error('The mainWindow is not initialized.');
+            }
             break;
         case 'options':
             console.log('Opening options...');
