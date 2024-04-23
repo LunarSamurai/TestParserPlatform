@@ -6,6 +6,7 @@ async function loadPrompts() {
     sessionStorage.setItem('amountOfPrompts', prompts.length);
     if (currentPromptIndex >= prompts.length) {
         window.location.href = '../../LikertScale/LikertScalePrompt/likertPromptService.html';
+        sessionStorage.clear(); // Clear session storage for new exam
     }
     displayPrompt(currentPromptIndex); // Start by displaying the first question
 }

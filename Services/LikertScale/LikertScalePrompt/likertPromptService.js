@@ -9,6 +9,7 @@ async function loadPrompts() {
     sessionStorage.setItem('amountOfLikertPrompts', prompts.length);
     if (currentPromptIndex >= prompts.length) {
         window.location.href = '../../Slider/SliderService.html'; // Temporary Until Modularity/Only for build 1.0
+        sessionStorage.clear(); // Clear session storage for new exam
     }
     displayPrompt(currentPromptIndex); // Start by displaying the first question
 }

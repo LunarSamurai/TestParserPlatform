@@ -230,6 +230,21 @@ ipcMain.handle('erase-text-files', async (event) => {
     }
 });
 
+ipcMain.handle('viewAllResults', async (event) => {
+    try {
+        const directoryPath = path.join(__dirname, 'Resources', 'Results');
+        const files = await fs.promises.readdir(directoryPath);
+        const results = await Promise.all(files.map(async fileName => {
+            const content = await fs.promises.readFile(path.join(directoryPath, fileName), 'utf8');
+            return { fileName, content };  // Remove the success property from here
+        }));
+        return { success: true, data: results };  // Add a success property here
+    } catch (error) {
+        console.error('Failed to read directory:', error);
+        return { success: false, error: error.message };  // Include an error message
+    }
+});
+
 // Quit when all windows are closed, except on macOS. There,
 // it's common for applications and their menu bar to stay active
 // until the user quits explicitly with Cmd + Q.

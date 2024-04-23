@@ -8,12 +8,12 @@
 </head>
 <body> 
   <div id="resultsContainer" class="resultsContainer">
-    <h1 class="resultsTitle">Results Menu</h1>
+    <h1 class="resultsTitle" >Results Menu</h1>
   </div>
   <div id="results-menu" class="results-menu">
     <nav class="menu">
-      <input id="menu-toggler" class="menu-toggler" type="checkbox" checked>
-      <label for="menu-toggler"></label>      
+      <input id="menu-toggler" class="menu-toggler" type="checkbox">
+      <label for="menu-toggler" class="menu-toggler-label"></label>      
         <ul>
           <li class="menu-item">
             <a class="fa-solid fa-filter" href="">
@@ -21,7 +21,7 @@
             </a>
           </li>
           <li class="menu-item">
-            <a class="fa-solid fa-eye" href="#">
+            <a class="fa-solid fa-eye" href="#" onclick="handleViewAllClick()">
               <span class="hover-text">View All</span>
             </a>
           </li>
@@ -42,6 +42,13 @@
           </li>
         </ul>
       </nav>
+    </div>
+    <!-- The Modal -->
+    <div id="modal" class="modal">
+      <div class="modal-content">
+          <span class="close">&times;</span>
+          <p id="fileContents"></p>
+      </div>
     </div>
     <script src="getResults.js"></script>
 </body>

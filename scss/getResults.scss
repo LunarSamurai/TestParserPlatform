@@ -161,8 +161,15 @@ body {
     height: 80px;
     opacity: 0;
     transition: 0.5s;
-    pointer-events: auto;  // Make sure the items can be interacted with
+    pointer-events: none;  // Make sure the items can be interacted with
 }
+
+/* When the toggler is checked, show the menu items */
+.menu-toggler:checked ~ ul .menu-item { 
+    opacity: 1;
+    transform: scale(1);
+    pointer-events: auto; /* Now interactive */
+  }
 
 .menu-item a {
     display: flex;
@@ -202,3 +209,122 @@ body {
     display: block;  // Display on hover
     opacity: 1;  // Make text visible
 }
+
+/* Modal styling */
+.modal {
+    position: absolute;
+    display: none;
+    z-index: 1000; /* Sit on top */
+    margin:auto;
+    cursor:pointer;
+    background-color: rgba(0, 0, 0, 0.5); /* Black with opacity */
+    /*display: flex;*/
+    justify-content: center;
+    align-items: center;
+    max-width: 900px; /* Maximum width with proper scaling */
+    width: 100%; /* Responsive width */
+    max-height: 550px;
+    height: 100%;
+  }
+  
+  .modal-content {
+    background-color: #fff;
+    margin: auto; /* Auto margins for centering */
+    padding: 2em;
+    top:0;
+    bottom:0;
+    right:0;
+    left:0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+    border-radius: 8px; /* Rounded corners */
+    max-width: 900px; /* Maximum width with proper scaling */
+    width: 100%; /* Responsive width */
+    max-height: 750px;
+    height: 100%;
+    transform: translateY(-50px); /* Slightly raised */
+    transition: transform 0.3s ease-out, opacity 0.3s ease;
+    opacity: 0; /* Start invisible */
+  }
+  
+  .modal-content.active {
+    /* When active, transition the modal into view */
+    display: flex;
+    transform: translateY(0);
+    opacity: 1;
+  }
+  
+  .close {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+  }
+  
+  .close:hover,
+  .close:focus {
+    color: #333;
+  }
+
+  .scrollable-table-container {
+    max-height: 500px;
+    height: 100%;
+    margin: 15px 0;
+  }
+  
+  table {
+    width: 100%; /* Full width tables */
+    height: 100%;
+    border-collapse: collapse; /* Collapse borders */
+  }
+  
+  th, td {
+    text-align: left; /* Align text to the left */
+    padding: 12px; /* Add spacing around table cells */
+    border-bottom: 1px solid #ccc; /* Bottom border for headers */
+  }
+  
+  th {
+    background-color: #f8f8f8; /* Slightly grey background for header */
+    color: #333; /* Dark text for contrast */
+  }
+  
+  td {
+    color: #666; /* Slightly lighter text for the content */
+  }
+  
+  /* Scrollable tbody for better handling of large content */
+  tbody {
+    display: block;
+    max-height: 750px; /* Set a max-height */
+    height: 100%;
+    overflow-y: auto; /* Enable vertical scrolling */
+  }
+  
+  thead, tbody tr {
+    display: table;
+    width: 100%; /* Width of the table */
+    table-layout: fixed; /* Fixed table layout for uniformity */
+  }
+  
+  thead {
+    width: calc(100% - 1em); /* Adjust width for scrollbar space */
+  }
+  
+  /* Improve the look & feel of the modal trigger button if necessary */
+  .modal-trigger {
+    background-color: #1a73e8; /* Google blue */
+    color: white;
+    border: none;
+    border-radius: 4px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  
+  .modal-trigger:hover {
+    background-color: #135ab7; /* A darker shade of blue on hover */
+  }
+
+  
