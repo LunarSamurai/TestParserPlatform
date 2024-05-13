@@ -1,4 +1,4 @@
-const { app, BrowserWindow, ipcMain } = require('electron');
+const { app, BrowserWindow, ipcMain, shell, dialog } = require('electron');
 const fs = require('fs'); // Add this line to import the fs module
 const path = require('path');
 const os = require('os');
@@ -249,6 +249,62 @@ ipcMain.handle('viewAllResults', async (event) => {
     } catch (error) {
         console.error('Failed to read directory:', error);
         return { success: false, error: error.message };  // Include an error message
+    }
+});
+
+ipcMain.handle('view-files', async (event) => {
+    try {
+        const resourcesPath = path.join(__dirname, 'Resources');
+        console.log("Resources Path:", resourcesPath);  // Log the path to check it
+        const folders = fs.readdirSync(resourcesPath, { withFileTypes: true })
+            .filter(dirent => dirent.isDirectory())
+            .map(dirent => {
+                const folderPath = path.join(resourcesPath, dirent.name);
+                console.log("Folder Path:", folderPath);  // Log each folder path
+                const files = fs.readdirSync(folderPath)
+                                .filter(file => fs.statSync(path.join(folderPath, file)).isFile())
+                                .map(file => file);
+                return { folder: dirent.name, files: files, path: path.normalize(folderPath) };
+            });
+        return { success: true, data: folders };
+    } catch (error) {
+        console.error('Failed to read Resources directory:', error);
+        return { success: false, message: 'Failed to read Resources directory' };
+    }
+});
+
+
+
+// Handling opening an item
+ipcMain.handle('open-item', async (event, filePath) => {
+    console.log("Open item at path:", filePath);
+    const response = shell.openPath(filePath);
+    console.log("Response from openPath:", response);
+    return response;
+});
+
+
+// Handling deleting an item
+ipcMain.handle('delete-item', async (event, filePath) => {
+    try {
+        fs.unlinkSync(filePath);
+        return true;  // File deleted successfully
+    } catch (error) {
+        console.error('Error deleting file:', error);
+        return false;  // Failed to delete file
+    }
+});
+
+// Handling renaming an item
+ipcMain.handle('rename-item', async (event, { oldPath, newName }) => {
+    const dir = path.dirname(oldPath);
+    const newPath = path.join(dir, newName);
+    try {
+        fs.renameSync(oldPath, newPath);
+        return newPath;  // Return the new path
+    } catch (error) {
+        console.error('Error renaming file:', error);
+        return oldPath;  // Return the old path on failure
     }
 });
 

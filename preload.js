@@ -1,8 +1,9 @@
-const { contextBridge, ipcRenderer } = require('electron');
+const { contextBridge, ipcRenderer, shell, dialog, fs } = require('electron');
 const path = require('path');
 
 contextBridge.exposeInMainWorld('electronApi', {
     getAppPath: () => path.join(__dirname),
+    
 });
 
 console.log("Preload script is running", "The path is: ", path.join(__dirname, 'preload.js'));
@@ -23,7 +24,7 @@ contextBridge.exposeInMainWorld('api', {
     loadSliders: () => ipcRenderer.invoke('load-sliders'),
     saveFormData: (formString) => ipcRenderer.invoke('save-form-data', formString),
     getDateID: () => ipcRenderer.invoke('getDateID'),
-    invoke: (channel, data) => ipcRenderer.invoke(channel, data)    // Other methods
+    invoke: (channel, data) => ipcRenderer.invoke(channel, data),    // Other methods
 });
 
 console.log("Preload script finished executing");

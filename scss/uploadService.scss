@@ -221,122 +221,170 @@ body {
     opacity: 1;  // Make text visible
 }
 
-/* Modal styling */
-.modal {
-    position: absolute;
-    display: none;
-    z-index: 1000; /* Sit on top */
-    margin:auto;
-    cursor:pointer;
-    background-color: rgba(0, 0, 0, 0.5); /* Black with opacity */
-    /*display: flex;*/
-    justify-content: center;
-    align-items: center;
-    max-width: 900px; /* Maximum width with proper scaling */
-    width: 100%; /* Responsive width */
-    max-height: 550px;
-    height: 100%;
-  }
-  
-  .modal-content {
-    background-color: #fff;
-    margin: auto; /* Auto margins for centering */
-    padding: 2em;
-    top:0;
-    bottom:0;
-    right:0;
-    left:0;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
-    border-radius: 8px; /* Rounded corners */
-    max-width: 900px; /* Maximum width with proper scaling */
-    width: 100%; /* Responsive width */
-    max-height: 750px;
-    height: 100%;
-    transform: translateY(-50px); /* Slightly raised */
-    transition: transform 0.3s ease-out, opacity 0.3s ease;
-    opacity: 0; /* Start invisible */
-  }
-  
-  .modal-content.active {
-    /* When active, transition the modal into view */
-    display: flex;
-    transform: translateY(0);
-    opacity: 1;
-  }
-  
-  .close {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-    cursor: pointer;
-  }
-  
-  .close:hover,
-  .close:focus {
-    color: #333;
-  }
+/* Overall Modal Styling */
+.viewFilesmodal {
+  position: fixed; /* Use fixed to ensure it's relative to the viewport */
+  display: none;
+  z-index: 1000; /* Above other content */
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5); /* Black with opacity */
+  justify-content: center;
+  align-items: center;
+}
 
-  .scrollable-table-container {
-    max-height: 500px;
-    height: 100%;
-    margin: 15px 0;
-  }
-  
-  table {
-    width: 100%; /* Full width tables */
-    height: 100%;
-    border-collapse: collapse; /* Collapse borders */
-  }
-  
-  th, td {
-    text-align: left; /* Align text to the left */
-    padding: 12px; /* Add spacing around table cells */
-    border-bottom: 1px solid #ccc; /* Bottom border for headers */
-  }
-  
-  th {
-    background-color: #f8f8f8; /* Slightly grey background for header */
-    color: #333; /* Dark text for contrast */
-  }
-  
-  td {
-    color: #666; /* Slightly lighter text for the content */
-  }
-  
-  /* Scrollable tbody for better handling of large content */
-  tbody {
-    display: block;
-    max-height: 750px; /* Set a max-height */
-    height: 100%;
-    overflow-y: auto; /* Enable vertical scrolling */
-  }
-  
-  thead, tbody tr {
-    display: table;
-    width: 100%; /* Width of the table */
-    table-layout: fixed; /* Fixed table layout for uniformity */
-  }
-  
-  thead {
-    width: calc(100% - 1em); /* Adjust width for scrollbar space */
-  }
-  
-  /* Improve the look & feel of the modal trigger button if necessary */
-  .modal-trigger {
-    background-color: #1a73e8; /* Google blue */
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 10px 20px;
-    font-size: 16px;
-    cursor: pointer;
-    transition: background-color 0.3s ease;
-  }
-  
-  .modal-trigger:hover {
-    background-color: #135ab7; /* A darker shade of blue on hover */
-  }
+.viewFilesmodal-content {
+  background-color: #fff;
+  padding: 2em;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  width: 80%; /* Responsive width */
+  max-width: 900px; /* Max width */
+  height: auto; /* Auto height based on content */
+  max-height: 90%; /* Max height */
+  overflow: auto; /* Enables scrolling on overflow */
+  transform: translateY(-50px);
+  transition: transform 0.3s ease-out, opacity 0.3s ease;
+  opacity: 0;
+}
+
+.viewFilesmodal-content.active {
+  display: block; /* Display block to fill the area as needed */
+  transform: translateY(0);
+  opacity: 1;
+}
+
+.close {
+  color: #aaa;
+  float: right;
+  font-size: 28px;
+  font-weight: bold;
+  cursor: pointer;
+}
+
+.close:hover,
+.close:focus {
+  color: #333;
+}
+
+/* Directory Tree Styling */
+.directory-tree {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  overflow-y: auto; /* Scrollable vertically if needed */
+  max-height: 500px; /* Max height for scrollable area */
+}
+
+.directory-tree ul {
+  margin-left: 20px;
+}
+
+.folder-name, .file-name {
+  display: block;
+  padding: 8px;
+  cursor: pointer;
+  color: #333;
+  font-weight: bold;
+}
+
+.folder-name:hover, .file-name:hover {
+  background-color: #f0f0f0;
+}
+
+.file-name {
+  font-weight: normal;
+}
+
+/* Table Styling */
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th, td {
+  text-align: left;
+  padding: 12px;
+  border-bottom: 1px solid #ccc;
+}
+
+th {
+  background-color: #f8f8f8;
+  color: #333;
+}
+
+td {
+  color: #666;
+}
+
+tbody {
+  display: block;
+  max-height: 400px; /* Height for tbody scrolling */
+  overflow-y: auto; /* Scrollbar for tbody */
+}
+
+thead, tbody tr {
+  display: table;
+  width: 100%;
+  table-layout: fixed;
+}
+
+thead {
+  width: calc(100% - 1em); /* Adjust for scrollbar */
+}
+
+/* Button Styling for Modal Trigger */
+.viewFilesmodal-trigger {
+  background-color: #1a73e8; /* Google blue */
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.viewFilesmodal-trigger:hover {
+  background-color: #135ab7; /* Darker blue on hover */
+}
+
+.hidden {
+  display: none;
+}
+
+.item-options {
+  display: none; /* Hide by default */
+  position: absolute; /* Position relative to parent item */
+  background-color: #f9f9f9;
+  min-width: 120px; /* Minimum width of the dropdown */
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  z-index: 1; /* Ensure it's above other items */
+}
+
+.item-options:hover {
+  display: block; /* Show on hover */
+}
+
+.item-options ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.item-options li {
+  padding: 8px 16px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+  cursor: pointer;
+}
+
+.item-options li:hover {
+  background-color: #f1f1f1; /* Light grey background on hover */
+}
+
 
 .permission-modal {
     display: none;

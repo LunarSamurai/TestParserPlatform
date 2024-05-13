@@ -43,6 +43,24 @@ function loadSliders() {
         .catch(handleError);
 }
 
+function openItem(path) {
+    window.api.openItem(path);
+}
+
+function deleteItem(path) {
+    window.api.deleteItem(path).then(deleted => {
+        if (deleted) {
+            console.log('File was deleted');
+        }
+    });
+}
+
+function renameItem(path) {
+    // You will need a new way to gather input from the user, as showInputDialog does not exist.
+    // You could use a prompt or a custom modal in your HTML.
+}
+
+
 function setupFormInteractions() {
     const formData = {}; // Ensure formData is defined properly
     const dateID = ''; // Ensure dateID is defined properly

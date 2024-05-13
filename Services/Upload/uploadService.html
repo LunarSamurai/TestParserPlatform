@@ -17,12 +17,12 @@
       <!--<p class="menu-toggler-description">Click here</p>-->
         <ul>
           <li class="menu-item">
-            <a class="fa-solid fa-eye" href="#" onclick="handleViewAllClick()">
+            <a class="fa-solid fa-eye" href="#" onclick="handleViewClick()">
               <span class="hover-text">View Order</span>
             </a>
           </li>
           <li class="menu-item">
-            <a class="fa-solid fa-pen-to-square" href="#" onclick="handleEditOrder()">
+            <a class="fa-solid fa-pen-to-square" href="#" onclick="handleEditClick()">
               <span class="hover-text">Edit Order</span>
             </a>
           </li>
@@ -32,7 +32,7 @@
             </a>
           </li>
           <li class="menu-item">
-            <a class="fa-solid fa-gear"href="#" onclick="handleModifyExamClick()">
+            <a class="fa-solid fa-gear"href="#" onclick="handleModifyClick()">
               <span class="hover-text">Modify Exam</span>
             </a>
           </li>
@@ -44,11 +44,12 @@
         </ul>
       </nav>
     </div>
-    <!-- The Modal -->
-    <div id="modal" class="modal">
-      <div class="modal-content">
+    <!-- The View Files Modal -->
+    <div id="viewFilesmodal" class="viewFilesmodal">
+      <div class="viewFilesmodal-content">
           <span class="close">&times;</span>
-          <p id="fileContents"></p>
+          <h2 class="viewFilesmodal-title">Directory List</h2> <!-- Title for the modal -->
+          <div id="directoryTree" class="directory-tree"></div>
       </div>
     </div>
     <div id="permissionModal" class="permission-modal">
