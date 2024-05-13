@@ -1,1 +1,0 @@
-{"rank":"","mosBranch":"","age":"","education":"","otherEducation":"","lastCompletedPME":"","totalLengthService":"","leadershipPositions":"","priorService":"yes","lengthOfService":"","priorServiceBranch":"","previousRank":"","lastHeldDutyPosition":"","totalDeployments":"","commissioningSource":[]}

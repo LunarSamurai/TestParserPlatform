@@ -60,8 +60,11 @@ ipcMain.on('action', (event, action) => {
             // Implement viewing results
             break;
         case 'upload':
-            console.log('Opening upload dialog...');
-            // Implement upload functionality
+            if (mainWindow) {
+                mainWindow.loadFile('Services/Upload/uploadService.html'); // Load test.html in mainWindow
+            } else {
+                console.error('The mainWindow is not initialized.');
+            }            
             break;
         case 'start-exam':
             if (mainWindow) {

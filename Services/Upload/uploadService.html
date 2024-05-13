@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Results</title>
+    <link rel="stylesheet" href="../../css/uploadService.css"> <!-- Adjust the path as necessary -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body> 
+  <div id="uploadContainer" class="uploadContainer">
+    <h1 class="uploadTitle" >Upload Menu</h1>
+  </div>
+  <div id="upload-menu" class="upload-menu">
+    <nav class="menu">
+      <input id="menu-toggler" class="menu-toggler" type="checkbox">
+      <label for="menu-toggler" class="menu-toggler-label"></label>
+      <!--<p class="menu-toggler-description">Click here</p>-->
+        <ul>
+          <li class="menu-item">
+            <a class="fa-solid fa-eye" href="#" onclick="handleViewAllClick()">
+              <span class="hover-text">View Order</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a class="fa-solid fa-pen-to-square" href="#" onclick="handleEditOrder()">
+              <span class="hover-text">Edit Order</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a class="fa-solid fa-upload" href="#" onclick="handleUploadClick()">
+              <span class="hover-text">Upload</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a class="fa-solid fa-gear"href="#" onclick="handleModifyExamClick()">
+              <span class="hover-text">Modify Exam</span>
+            </a>
+          </li>
+          <li class="menu-item">
+            <a class ="fa-solid fa-house" href="#" onclick="handleHomeClick()">
+              <span class="hover-text">Return</span>
+            </a>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    <!-- The Modal -->
+    <div id="modal" class="modal">
+      <div class="modal-content">
+          <span class="close">&times;</span>
+          <p id="fileContents"></p>
+      </div>
+    </div>
+    <div id="permissionModal" class="permission-modal">
+      <div class="permission-modal-content">
+        <div class="permission-text">
+          <p>Permission Denied, Contact your System Administrator.</p>
+          <button id="okButton" class="permission-modal-ok">Okay</button>
+        </div>
+      </div>
+    </div>
+    <script src="uploadService.js"></script>
+    <script>
+      window.onload = function() {
+        // Check if the user is marked as an admin in sessionStorage
+        if (sessionStorage.getItem("isAdmin") !== "true") {
+          var permissionModal = document.getElementById("permissionModal");
+          var okButton = document.getElementById("okButton");
+          
+          // Show the permission denied modal
+          permissionModal.style.display = "block";
+    
+          // Handle the Okay button click
+          okButton.onclick = function() {
+            window.location.href = "../../index.html"; // Redirect to the home page
+          };
+        }
+      };
+    </script>
+</body>
+</html>
