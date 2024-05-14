@@ -1,17 +1,12 @@
-function handleHomeClick(){
+function handleHomeClick() {
     window.location.href = "../../index.html";
     sessionStorage.clear("isAdmin");
 }
 
 async function handleViewClick() {
     try {
-        // Call IPC to retrieve the directory structure
         const result = await window.api.invoke('view-files');
-        console.log("API result:", result);
-
-        // Check if the result was successful and the data is in the expected format
         if (result.success && Array.isArray(result.data)) {
-            // Display the directory structure in a modal
             displayModal(buildDirectoryTreeHtml(result.data));
         } else {
             console.error('Failed to retrieve files:', result.message || 'result object is missing expected properties or is not an array');
@@ -22,7 +17,6 @@ async function handleViewClick() {
         alert('An error occurred while trying to retrieve files.');
     }
 }
-
 
 function displayModal(htmlContent) {
     const modal = document.getElementById('viewFilesmodal');
@@ -52,6 +46,61 @@ function displayModal(htmlContent) {
     };
 }
 
+function setupEventListeners() {
+    document.querySelectorAll('.item-options li').forEach(item => {
+        item.addEventListener('click', function(event) {
+            const action = this.textContent.trim();
+            const path = this.closest('.item-options').getAttribute('data-path');
+            switch (action) {
+                case 'Open':
+                    openItem(path);
+                    break;
+                case 'Delete':
+                    deleteItem(path);
+                    break;
+                case 'Rename':
+                    const newName = prompt('Enter the new name:');
+                    if (newName) renameItem(path, newName);
+                    break;
+            }
+        });
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const items = document.querySelectorAll('.folder-name, .file-name');
+    items.forEach(item => {
+        item.addEventListener('mouseenter', function() {
+            const optionsMenu = this.nextElementSibling;
+            optionsMenu.style.display = 'block'; // Show the menu to calculate dimensions
+            const menuRect = optionsMenu.getBoundingClientRect();
+            const itemRect = this.getBoundingClientRect();
+
+            // Check if the dropdown goes below the window height
+            if (menuRect.bottom > window.innerHeight) {
+                optionsMenu.style.top = '';
+                optionsMenu.style.bottom = '100%'; // Position it above the item
+            } else {
+                optionsMenu.style.top = '100%'; // Position it below the item (default)
+                optionsMenu.style.bottom = '';
+            }
+        });
+
+        item.addEventListener('mouseleave', function(event) {
+            const optionsMenu = this.nextElementSibling;
+            if (!optionsMenu.contains(event.relatedTarget)) {
+                optionsMenu.style.display = 'none'; // Hide the menu
+            }
+        });
+    });
+
+    // Also handle mouseleave on the optionsMenu itself
+    document.querySelectorAll('.item-options').forEach(menu => {
+        menu.addEventListener('mouseleave', function() {
+            this.style.display = 'none';
+        });
+    });
+});
 
 
 function buildDirectoryTreeHtml(data) {
@@ -59,27 +108,25 @@ function buildDirectoryTreeHtml(data) {
         console.error('Expected data to be an array, received:', data);
         return '<p>Error: Data is not an array.</p>';
     }
-    let html = '<ul class="directory-list">'; // Ensure your root element has a class for potential styling or scripting
+    let html = '<ul>';
     data.forEach(folder => {
-        html += `<li>
-                    <span class="folder-name" onclick="toggleItemOptions(event)">${folder.folder}</span>
-                    <div class="item-options hidden"> <!-- Ensure this is initially hidden -->
-                        <ul>
-                            <li onclick="openItem('${folder.path.replace(/\\/g, '\\\\')}')">Open</li>
-                            <li onclick="deleteItem('${folder.path.replace(/\\/g, '\\\\')}')">Delete</li>
-                            <li onclick="renameItem('${folder.path.replace(/\\/g, '\\\\')}', '${folder.folder}')">Rename</li>
-                        </ul>
-                    </div>
-                    <ul>`;
+        html += `<li><span class="folder-name">${folder.folder}</span>`;
+        html += `<div class="item-options" data-path="${folder.path.replace(/\\/g, '\\\\')}">
+                    <ul>
+                        <li>Open</li>
+                        <li>Delete</li>
+                        <li>Rename</li>
+                    </ul>
+                 </div>`;
+        html += "<ul>";
         folder.files.forEach(file => {
             const fullPath = `${folder.path}\\${file}`;
-            html += `<li>
-                        <span class="file-name" onclick="toggleItemOptions(event)">${file}</span>
-                        <div class="item-options hidden">
+            html += `<li><span class="file-name">${file}</span>
+                        <div class="item-options" data-path="${fullPath.replace(/\\/g, '\\\\')}">
                             <ul>
-                                <li onclick="openItem('${fullPath.replace(/\\/g, '\\\\')}')">Open</li>
-                                <li onclick="deleteItem('${fullPath.replace(/\\/g, '\\\\')}')">Delete</li>
-                                <li onclick="renameItem('${fullPath.replace(/\\/g, '\\\\')}', '${file}')">Rename</li>
+                                <li>Open</li>
+                                <li>Delete</li>
+                                <li>Rename</li>
                             </ul>
                         </div>
                      </li>`;
@@ -90,42 +137,9 @@ function buildDirectoryTreeHtml(data) {
     return html;
 }
 
-
-function toggleItemOptions(event) {
-    event.stopPropagation(); // Prevent the event from bubbling up
-
-    // Find the .item-options div related to the clicked name
-    const itemOptions = event.currentTarget.nextElementSibling;
-
-    // Hide all other .item-options to ensure only one set is visible at a time
-    document.querySelectorAll('.item-options').forEach(option => {
-        if (option !== itemOptions) {
-            option.classList.add('hidden');
-        }
-    });
-
-    // Toggle visibility of the clicked item's options
-    itemOptions.classList.toggle('hidden');
-}
-
-
-
-// Attach this function to load dynamically with your content
-function setupEventListeners() {
-    // This function should be called right after updating the DOM with new HTML content
-    document.querySelectorAll('.folder-name, .file-name').forEach(element => {
-        element.removeEventListener('click', toggleItemOptions); // Remove existing listeners to avoid duplicates
-        element.addEventListener('click', toggleItemOptions); // Add listener
-    });
-}
-
-
-
-
 async function openItem(path) {
     try {
-        console.log("Trying to open:", path);
-        await window.api.invoke('open-item', `"${path}"`);  // Ensure path is quoted if necessary
+        await window.api.invoke('open-item', path);
     } catch (error) {
         console.error('Error opening item:', error);
         alert('Failed to open the item.');
@@ -134,10 +148,12 @@ async function openItem(path) {
 
 async function deleteItem(path) {
     try {
-        console.log("Trying to delete:", path);
-        const deleted = await window.api.invoke('delete-item', path);  // Ensure path is quoted if necessary
-        console.log(deleted ? 'File was deleted' : 'File deletion canceled');
-        return deleted;
+        const confirmation = confirm('Are you sure you want to delete this file?');
+        if (confirmation) {
+            const result = await window.api.invoke('delete-item', path);
+            if (result) alert('File successfully deleted');
+            else alert('File deletion canceled');
+        }
     } catch (error) {
         console.error('Error deleting item:', error);
         alert('Failed to delete the item.');
@@ -146,19 +162,15 @@ async function deleteItem(path) {
 
 async function renameItem(path, newName) {
     try {
-        console.log("Trying to rename:", path, "to", newName);
-        const newPath = await window.api.invoke('rename-item', { oldPath: `"${path}"`, newName });  // Ensure path is quoted if necessary
-        console.log(`File renamed to ${newPath}`);
-        return newPath;
+        const newPath = await window.api.invoke('rename-item', { oldPath: path, newName });
+        if (newPath) alert(`File renamed to ${newName}`);
     } catch (error) {
         console.error('Error renaming item:', error);
         alert('Failed to rename the item.');
     }
 }
 
-
-
-    
+ 
 async function handleEditClick(){
 
 }

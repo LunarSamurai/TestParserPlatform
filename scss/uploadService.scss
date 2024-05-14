@@ -271,6 +271,7 @@ body {
 
 /* Directory Tree Styling */
 .directory-tree {
+  position:relative;
   margin: 0;
   padding: 0;
   list-style: none;
@@ -351,38 +352,36 @@ thead {
   background-color: #135ab7; /* Darker blue on hover */
 }
 
-.hidden {
-  display: none;
-}
-
 .item-options {
-  display: none; /* Hide by default */
-  position: absolute; /* Position relative to parent item */
-  background-color: #f9f9f9;
-  min-width: 120px; /* Minimum width of the dropdown */
-  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
-  z-index: 1; /* Ensure it's above other items */
+    display: none; /* Hide by default */
+    position: absolute; /* Position relative to parent item */
+    background-color: #f9f9f9;
+    min-width: 120px; /* Minimum width of the dropdown */
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+    z-index: 1; /* Ensure it's above other items */
 }
 
+.folder-name:hover + .item-options,
+.file-name:hover + .item-options,
 .item-options:hover {
-  display: block; /* Show on hover */
+    display: block; /* Show on hover */
 }
 
 .item-options ul {
-  list-style: none;
-  padding: 0;
-  margin: 0;
+    list-style: none;
+    padding: 0;
+    margin: 0;
 }
 
 .item-options li {
-  padding: 8px 16px;
-  text-align: left;
-  border-bottom: 1px solid #ddd;
-  cursor: pointer;
+    padding: 8px 16px;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+    cursor: pointer;
 }
 
 .item-options li:hover {
-  background-color: #f1f1f1; /* Light grey background on hover */
+    background-color: #f1f1f1; /* Light grey background on hover */
 }
 
 
