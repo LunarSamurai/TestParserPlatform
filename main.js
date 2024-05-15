@@ -308,6 +308,64 @@ ipcMain.handle('rename-item', async (event, { oldPath, newName }) => {
     }
 });
 
+ipcMain.handle('open-file-explorer', async (event, { defaultPath = "" }) => {
+    try {
+        // Ensure the defaultPath is always a string
+        if (typeof defaultPath !== 'string') {
+            defaultPath = ""; // Fallback to a default path or log an error as needed
+        }
+
+        const { filePaths } = await dialog.showOpenDialog({
+            properties: ['openFile', 'multiSelections'],
+            defaultPath: defaultPath // Ensure this is a valid string or empty
+        });
+
+        if (filePaths.length > 0) {
+            return { success: true, filePaths };
+        } else {
+            return { success: false, message: "No file selected." };
+        }
+        
+    } catch (error) {
+        console.error('Error opening file explorer:', error);
+        return { success: false, message: error.message };
+    }
+});
+
+ipcMain.handle('upload-file', async (event, { sourcePaths, destinationFolder }) => {
+    console.log("Received sourcePaths:", sourcePaths);
+    console.log("Received destinationFolder:", destinationFolder);
+
+    try {
+        // Check if sourcePaths is an array and contains valid paths
+        if (!Array.isArray(sourcePaths) || sourcePaths.some(path => typeof path !== 'string')) {
+            throw new Error("Invalid source paths or one of the paths is not a string.");
+        }
+        // Check if destinationFolder is a string
+        if (typeof destinationFolder !== 'string') {
+            throw new Error("Invalid destination path.");
+        }
+
+        // Ensure the destination folder exists
+        if (!fs.existsSync(destinationFolder)) {
+            fs.mkdirSync(destinationFolder, { recursive: true });
+        }
+
+        const results = await Promise.all(sourcePaths.map(async (sourcePath) => {
+            const fileName = path.basename(sourcePath);
+            const destinationPath = path.join(destinationFolder, fileName);
+            await fs.promises.copyFile(sourcePath, destinationPath);
+            return { fileName, status: 'Success' };
+        }));
+
+        return { success: true, results };
+    } catch (error) {
+        console.error('Failed to upload files:', error);
+        return { success: false, message: error.message };
+    }
+});
+
+
 // Quit when all windows are closed, except on macOS. There,
 // it's common for applications and their menu bar to stay active
 // until the user quits explicitly with Cmd + Q.

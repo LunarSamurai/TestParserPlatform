@@ -1,3 +1,7 @@
+let currentSelectedPath = "";
+let currentSelection = null;  // Globally defined to track the selected DOM element
+
+
 function handleHomeClick() {
     window.location.href = "../../index.html";
     sessionStorage.clear("isAdmin");
@@ -18,33 +22,6 @@ async function handleViewClick() {
     }
 }
 
-function displayModal(htmlContent) {
-    const modal = document.getElementById('viewFilesmodal');
-    const fileContentsElement = document.getElementById('directoryTree');
-    const span = modal.querySelector('.close');
-
-    fileContentsElement.innerHTML = htmlContent;
-    setupEventListeners();  // Setup event listeners after updating the HTML
-
-    modal.style.display = "flex";
-    modal.querySelector('.viewFilesmodal-content').classList.add('active');
-
-    span.onclick = function() {
-        modal.querySelector('.viewFilesmodal-content').classList.remove('active');
-        setTimeout(() => {
-            modal.style.display = "none";
-        }, 300);
-    };
-
-    window.onclick = function(event) {
-        if (event.target === modal) {
-            modal.querySelector('.viewFilesmodal-content').classList.remove('active');
-            setTimeout(() => {
-                modal.style.display = "none";
-            }, 300);
-        }
-    };
-}
 
 function setupEventListeners() {
     document.querySelectorAll('.item-options li').forEach(item => {
@@ -102,7 +79,72 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 });
 
+ 
+async function handleEditClick(){
+    
+}
 
+async function handleUploadClick() {
+    try {
+        const result = await window.api.invoke('view-files');
+        if (result.success && Array.isArray(result.data)) {
+            const treeHtml = buildUploadDirectoryTreeHtml(result.data, true); // Adjust function to handle click for selection
+            displayUploadModal(treeHtml);
+        } else {
+            console.error('Failed to retrieve files:', result.message || 'Unexpected error');
+            alert('Failed to retrieve files: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error retrieving files:', error);
+        alert('An error occurred while trying to retrieve files.');
+    }
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    modal.querySelector('.modal-content').classList.remove('active');
+    setTimeout(() => {
+        modal.style.display = "none";
+    }, 300);
+}
+
+
+async function handleModifyClick(){
+
+}
+
+
+//Display Modal Functions:
+function displayModal(htmlContent) {
+    const modal = document.getElementById('viewFilesmodal');
+    const fileContentsElement = document.getElementById('directoryTree');
+    const span = modal.querySelector('.close');
+
+    fileContentsElement.innerHTML = htmlContent;
+    setupEventListeners();  // Setup event listeners after updating the HTML
+
+    modal.style.display = "flex";
+    modal.querySelector('.viewFilesmodal-content').classList.add('active');
+
+    span.onclick = function() {
+        modal.querySelector('.viewFilesmodal-content').classList.remove('active');
+        setTimeout(() => {
+            modal.style.display = "none";
+        }, 300);
+    };
+
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            modal.querySelector('.viewFilesmodal-content').classList.remove('active');
+            setTimeout(() => {
+                modal.style.display = "none";
+            }, 300);
+        }
+    };
+}
+
+// Directory Trees
+// View Directory Tree:
 function buildDirectoryTreeHtml(data) {
     if (!Array.isArray(data)) {
         console.error('Expected data to be an array, received:', data);
@@ -170,15 +212,153 @@ async function renameItem(path, newName) {
     }
 }
 
- 
-async function handleEditClick(){
+// Upload Directory Tree
+function buildUploadDirectoryTreeHtml(data) {
+    if (!Array.isArray(data)) {
+        console.error('Expected data to be an array, received:', data);
+        return '<p>Error: Data is not an array.</p>';
+    }
 
+    let html = '<ul>';
+    data.forEach(folder => {
+        html += `<li><span class="folder-name" data-path="${folder.path.replace(/\\/g, '\\\\')}" onclick="selectFolder(event, '${folder.path.replace(/\\/g, '\\\\')}')">${folder.folder}</span><ul>`;
+        folder.files.forEach(file => {
+            html += `<li><span class="file-name">${file}</span></li>`;
+        });
+        html += '</ul></li>'; // Close the folder's file list UL
+    });
+    html += '</ul>'; // Close the main UL
+    return html;
 }
 
-async function handleUploadClick(){
 
+function displayUploadModal(htmlContent) {
+    const modal = document.getElementById('uploadFilesModal');
+    const directoryTreeElement = document.getElementById('uploadDirectoryTree');
+    const selectButton = document.getElementById('selectFolderButton');
+    const span = modal.querySelector('.close');
+
+    directoryTreeElement.innerHTML = htmlContent;
+    modal.style.display = "flex";
+    modal.querySelector('.uploadFilesmodal-content').classList.add('active');
+
+    span.onclick = function() {
+        closeModal('uploadFilesModal');
+    };
+
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            closeModal('uploadFilesModal');
+        }
+    };
+
+    selectButton.onclick = function() {
+        const selectedPath = getSelectedPath();
+        console.log('Selected Path on button click:', selectedPath);  // Debug: Check what path is selected
+    
+        if (selectedPath) {
+            openFileExplorer(selectedPath);
+        } else {
+            console.log('No folder selected when button clicked.');  // Additional debug info
+            alert('Please select a folder.');
+        }
+    };    
 }
 
-async function handleModifyClick(){
-
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        const modalContent = modal.querySelector('.uploadFilesmodal-content');
+        if (modalContent) {
+            modalContent.classList.remove('active');
+            setTimeout(() => {
+                modal.style.display = "none";
+            }, 300);
+        } else {
+            console.error('Modal content not found');
+        }
+    } else {
+        console.error('Modal not found');
+    }
 }
+
+function openFileExplorer() {
+    console.log('Attempting to open explorer for path:', currentSelectedPath);
+
+    if (typeof currentSelectedPath !== 'string' || currentSelectedPath === "") {
+        console.error('Invalid path', currentSelectedPath);
+        alert("Please select a valid folder first.");
+        return;
+    }
+    window.api.invoke('open-file-explorer', { defaultPath: currentSelectedPath, multiSelections: true }).then(response => {
+        console.log('File selection response:', response);
+        if (response.success && response.filePaths && response.filePaths.length > 0) {
+            console.log('Selected file paths:', response.filePaths); // Log the selected file paths
+            
+            // Handle both single and multiple file paths
+            response.filePaths.forEach(filePath => {
+                window.api.invoke('upload-file', { sourcePaths: [filePath], destinationFolder: currentSelectedPath }).then(result => {
+                    console.log('Upload result:', result);
+                    if (result.success) {
+                        console.log('File uploaded successfully:', filePath);
+                    } else {
+                        console.error('Failed to upload file:', filePath, 'Error:', result.message);
+                    }
+                }).catch(error => {
+                    console.error('Error during file upload:', error);
+                    alert('Failed to upload the files.');
+                });
+            });
+            
+            alert('Files uploaded successfully!');
+            closeModal('uploadFilesModal');
+        } else {
+            console.warn('No files selected or an error occurred during file selection.');
+            alert('No files selected or an error occurred during file selection.');
+        }
+    }).catch(error => {
+        console.error('Error during file selection:', error);
+        alert('Failed to select the files.');
+    });
+    
+    
+}
+
+
+function selectFolder(event, path) {
+    if (currentSelection) {
+        currentSelection.classList.remove('selected');
+    }
+    
+    const newSelection = event.currentTarget.parentNode;  // Verify the correct target is selected
+    newSelection.classList.add('selected');
+    currentSelection = newSelection;  // Update the global variable
+    currentSelectedPath = path.replace(/\\/g, '\\\\');  // Make sure the path is escaped properly
+
+    console.log('New path selected:', currentSelectedPath);
+    console.log('Current selection updated:', currentSelection);
+
+    event.stopPropagation();  // Prevents the event from bubbling up to parent elements
+}
+
+
+function getSelectedPath() {
+    if (currentSelection) {
+        const pathElement = currentSelection.querySelector('.folder-name');
+        const path = pathElement ? pathElement.getAttribute('data-path') : null;
+        console.log('Retrieving path from currentSelection:', path);
+        return path;
+    }
+    console.log('Current selection path is null');
+    return null;
+}
+
+
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('selectFolderButton').onclick = function() {
+        openFileExplorer();
+    };
+});
+
