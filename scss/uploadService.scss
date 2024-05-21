@@ -543,3 +543,87 @@ thead {
         background-color: #135ab7;
     }
 
+/* Edit Files Modal Styling */
+.editFilesModal, .editConfirmationModal, .fileEditorModal {
+  position: fixed;
+  display: none;
+  z-index: 1000;
+  left: 0;
+  top: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  justify-content: center;
+  align-items: center;
+}
+
+/* Edit Files Modal Styling */
+
+.editFilesmodal-content, .editConfirmationmodal-content, .fileEditormodal-content {
+  background-color: #fff;
+  padding: 2em;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1), 0 1px 3px rgba(0, 0, 0, 0.08);
+  border-radius: 8px;
+  width: 80%;
+  max-width: 900px;
+  transform: translateY(-50px);
+  transition: transform 0.3s ease-out, opacity 0.3s ease;
+  opacity: 0;
+}
+
+.editFilesmodal-content.active, .editConfirmationmodal-content.active, .fileEditormodal-content.active {
+  display: block;
+  transform: translateY(0);
+  opacity: 1;
+}
+
+textarea#fileEditorTextArea {
+  width: 100%;
+  height: 300px;
+  margin-bottom: 20px;
+}
+
+.save-file-button, .edit-confirm-button {
+  background-color: #1a73e8;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 10px 20px;
+  font-size: 16px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.save-file-button:hover, .edit-confirm-button:hover {
+  background-color: #135ab7;
+}
+
+#editor {
+  border: 1px solid black;  /* Black border */
+  background-color: white;  /* White background */
+  color: black;  /* Black text color */
+  border-radius: 4px;  /* Rounded corners */
+  padding: 5px;
+  margin-bottom: 15px;
+}
+
+.ace-chrome .ace_gutter {
+  background: #f0f0f0;
+  color: #333;
+}
+
+.ace-chrome .ace_marker-layer .ace_active-line {
+  background: #e8f2ff;  /* Light blue for active line */
+}
+
+.ace-chrome .ace_selection {
+  background: #d0e6ff;  /* Light blue for selection */
+}
+
+.ace-chrome .ace_cursor {
+  color: #007acc;  /* Blue cursor */
+}
+
+.ace-chrome {
+  color: black;  /* Black text color */
+}

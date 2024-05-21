@@ -5,89 +5,123 @@
     <title>Results</title>
     <link rel="stylesheet" href="../../css/uploadService.css"> <!-- Adjust the path as necessary -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
-</head>
+  </head>
 <body> 
   <div id="uploadContainer" class="uploadContainer">
-    <h1 class="uploadTitle" >Upload Menu</h1>
+    <h1 class="uploadTitle">Upload Menu</h1>
   </div>
   <div id="upload-menu" class="upload-menu">
     <nav class="menu">
       <input id="menu-toggler" class="menu-toggler" type="checkbox">
       <label for="menu-toggler" class="menu-toggler-label"></label>
-      <!--<p class="menu-toggler-description">Click here</p>-->
-        <ul>
+      <ul>
           <li class="menu-item">
             <a class="fa-solid fa-eye" href="#" onclick="handleViewClick()">
-              <span class="hover-text">View  Files</span>
+              <span class="hover-text">View Files</span>
             </a>
           </li>
           <li class="menu-item">
             <a class="fa-solid fa-pen-to-square" href="#" onclick="handleEditClick()">
-              <span class="hover-text">Edit  Files</span>
+              <span class="hover-text">Edit Files</span>
             </a>
           </li>
           <li class="menu-item">
             <a class="fa-solid fa-upload" href="#" onclick="handleUploadClick()">
-              <span class="hover-text">Upload  Files</span>
+              <span class="hover-text">Upload Files</span>
             </a>
           </li>
           <li class="menu-item">
-            <a class="fa-solid fa-gear"href="#" onclick="handleModifyClick()">
-              <span class="hover-text">Modify  Files</span>
+            <a class="fa-solid fa-gear" href="#" onclick="handleModifyClick()">
+              <span class="hover-text">Modify Files</span>
             </a>
           </li>
           <li class="menu-item">
-            <a class ="fa-solid fa-house" href="#" onclick="handleHomeClick()">
+            <a class="fa-solid fa-house" href="#" onclick="handleHomeClick()">
               <span class="hover-text">Return</span>
             </a>
           </li>
-        </ul>
-      </nav>
+      </ul>
+    </nav>
+  </div>
+
+  <!-- The View Files Modal -->
+  <div id="viewFilesmodal" class="viewFilesmodal">
+    <div class="viewFilesmodal-content modal-content">
+      <span class="close">&times;</span>
+      <h2 class="viewFilesmodal-title">Directory List</h2> <!-- Title for the modal -->
+      <div id="directoryTree" class="directory-tree"></div>
     </div>
-    <!-- The View Files Modal -->
-    <div id="viewFilesmodal" class="viewFilesmodal">
-      <div class="viewFilesmodal-content">
-          <span class="close">&times;</span>
-          <h2 class="viewFilesmodal-title">Directory List</h2> <!-- Title for the modal -->
-          <div id="directoryTree" class="directory-tree"></div>
+  </div>
+
+  <!-- Upload Files Modal -->
+  <div id="uploadFilesModal" class="uploadFilesModal">
+    <div class="uploadFilesmodal-content modal-content">
+      <span class="close">&times;</span>
+      <h2 class="uploadFilesmodal-title">Directory List</h2>
+      <div id="uploadDirectoryTree" class="directory-tree"></div>
+      <div id="modalFooter">
+        <button id="selectFolderButton" class="select-dir-button">Select</button>
       </div>
     </div>
-    <div id="uploadFilesModal" class="uploadFilesModal">
-      <div class="uploadFilesmodal-content">
-          <span class="close">&times;</span>
-          <h2 class="uploadFilesmodal-title">Directory List</h2> <!-- Title for the modal -->
-          <h3 class="uploadFilesmodal-subtitle">Select a folder to upload files</h3>
-          <div id="uploadDirectoryTree"></div>
-          <div id="modalFooter">
-              <button id="selectFolderButton" class="select-dir-button">Select</button>
-          </div>
-      </div>
-  </div>  
-    <div id="permissionModal" class="permission-modal">
-      <div class="permission-modal-content">
-        <div class="permission-text">
-          <p>Permission Denied, Contact your System Administrator.</p>
-          <button id="okButton" class="permission-modal-ok">Okay</button>
-        </div>
+  </div>
+
+  <!-- Permission Modal -->
+  <div id="permissionModal" class="permission-modal">
+    <div class="permission-modal-content modal-content">
+      <div class="permission-text">
+        <p>Permission Denied, Contact your System Administrator.</p>
+        <button id="okButton" class="permission-modal-ok">Okay</button>
       </div>
     </div>
-    <script src="uploadService.js"></script>
-    <script>
-      window.onload = function() {
-        // Check if the user is marked as an admin in sessionStorage
-        if (sessionStorage.getItem("isAdmin") !== "true") {
-          var permissionModal = document.getElementById("permissionModal");
-          var okButton = document.getElementById("okButton");
-          
-          // Show the permission denied modal
-          permissionModal.style.display = "block";
-    
-          // Handle the Okay button click
-          okButton.onclick = function() {
-            window.location.href = "../../index.html"; // Redirect to the home page
-          };
-        }
-      };
-    </script>
+  </div>
+
+  <!-- The Edit Files Modal -->
+  <div id="editFilesModal" class="editFilesModal">
+    <div class="editFilesmodal-content modal-content">
+      <span class="close">&times;</span>
+      <h2 class="editFilesmodal-title">Directory List</h2>
+      <div id="editDirectoryTree" class="directory-tree"></div>
+    </div>
+  </div>
+
+  <!-- The Edit Confirmation Modal -->
+  <div id="editConfirmationModal" class="editConfirmationModal">
+    <div class="editConfirmationmodal-content modal-content">
+      <span class="close">&times;</span>
+      <p>Do you want to edit this file?</p>
+      <button id="editYesButton" class="edit-confirm-button">Yes</button>
+      <button id="editNoButton" class="edit-confirm-button">No</button>
+    </div>
+  </div>
+
+  <!-- The File Editor Modal -->
+  <div id="fileEditorModal" class="fileEditorModal">
+    <div class="fileEditormodal-content modal-content">
+        <span class="close">&times;</span>
+        <h2 class="fileEditormodal-title">Edit File</h2>
+        <div id="editor" class ="editor" style="height: 300px; width: 100%;"></div>
+        <button id="saveFileButton" class="save-file-button">Save</button>
+    </div>
+</div>
+
+  <script src="uploadService.js"></script>
+  <script>
+    window.onload = function() {
+      // Check if the user is marked as an admin in sessionStorage
+      if (sessionStorage.getItem("isAdmin") !== "true") {
+        var permissionModal = document.getElementById("permissionModal");
+        var okButton = document.getElementById("okButton");
+        
+        // Show the permission denied modal
+        permissionModal.style.display = "block";
+
+        // Handle the Okay button click
+        okButton.onclick = function() {
+          window.location.href = "../../index.html"; // Redirect to the home page
+        };
+      }
+    };
+  </script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.4.13/ace.js"></script>
 </body>
 </html>

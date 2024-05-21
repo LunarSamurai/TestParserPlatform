@@ -361,13 +361,247 @@ document.addEventListener('DOMContentLoaded', function() {
     };
 });
 
- 
-async function handleEditClick(){
-    
+
+async function handleEditClick() {
+    try {
+        const result = await window.api.invoke('view-files');
+        if (result.success && Array.isArray(result.data)) {
+            displayEditModal(buildEditDirectoryTreeHtml(result.data));
+        } else {
+            console.error('Failed to retrieve files:', result.message || 'result object is missing expected properties or is not an array');
+            alert('Failed to retrieve files: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error retrieving files:', error);
+        alert('An error occurred while trying to retrieve files.');
+    }
 }
+
+function buildEditDirectoryTreeHtml(data) {
+    if (!Array.isArray(data)) {
+        console.error('Expected data to be an array, received:', data);
+        return '<p>Error: Data is not an array.</p>';
+    }
+
+    let html = '<ul>';
+    data.forEach(folder => {
+        const folderPath = folder.path.replace(/\\/g, '\\\\');
+        html += `<li><span class="folder-name" data-path="${folderPath}" onclick="selectFileToEdit(event, '${folderPath}')">${folder.folder}</span><ul>`;
+        folder.files.forEach(file => {
+            const fullPath = `${folder.path}\\${file}`.replace(/\\/g, '\\\\');
+            html += `<li><span class="file-name" data-path="${fullPath}" onclick="selectFileToEdit(event, '${fullPath}')">${file}</span></li>`;
+        });
+        html += '</ul></li>'; // Close the folder's file list UL
+    });
+    html += '</ul>'; // Close the main UL
+    return html;
+}
+
+function displayEditModal(htmlContent) {
+    const modal = document.getElementById('editFilesModal');
+    const directoryTreeElement = document.getElementById('editDirectoryTree');
+    const span = modal.querySelector('.close');
+
+    directoryTreeElement.innerHTML = htmlContent;
+    setupEditEventListeners();  // Setup event listeners for file selection
+
+    modal.style.display = "flex";
+    modal.querySelector('.editFilesmodal-content').classList.add('active');
+
+    span.onclick = function() {
+        closeModal('editFilesModal');
+    };
+
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            closeModal('editFilesModal');
+        }
+    };
+}
+
+function setupEditEventListeners() {
+    document.querySelectorAll('.folder-name, .file-name').forEach(item => {
+        item.addEventListener('click', function(event) {
+            const path = this.getAttribute('data-path');
+            selectFileToEdit(event, path);
+        });
+    });
+}
+
+function selectFileToEdit(event, path) {
+    console.log('Selected file path:', path);  // Debug log
+    if (!path) {
+        // If path is not provided, try to get it from the clicked element
+        path = event.currentTarget.getAttribute('data-path');
+        console.log('Retrieved file path from data-path attribute:', path);  // Debug log
+    }
+    currentSelectedPath = path;
+    displayEditConfirmationModal();
+}
+
+function displayEditConfirmationModal() {
+    const modal = document.getElementById('editConfirmationModal');
+    const yesButton = document.getElementById('editYesButton');
+    const noButton = document.getElementById('editNoButton');
+    const span = modal.querySelector('.close');
+
+    modal.style.display = "flex";
+    modal.querySelector('.editConfirmationmodal-content').classList.add('active');
+
+    yesButton.onclick = function() {
+        closeModal('editConfirmationModal');
+        console.log('Editing file path:', currentSelectedPath);  // Debug log
+        openFileEditor(currentSelectedPath);
+    };
+
+    noButton.onclick = function() {
+        closeModal('editConfirmationModal');
+    };
+
+    span.onclick = function() {
+        closeModal('editConfirmationModal');
+    };
+
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            closeModal('editConfirmationModal');
+        }
+    };
+}
+
+async function openFileEditor(path) {
+    try {
+        console.log('Requesting to read file:', path);  // Debug log
+        const result = await window.api.invoke('read-file', path);
+        if (result.success) {
+            const editorModal = document.getElementById('fileEditorModal');
+            const editorElement = document.getElementById('editor');
+            const saveButton = document.getElementById('saveFileButton');
+            const span = editorModal.querySelector('.close');
+
+            // Display modal first
+            editorModal.style.display = "flex";
+            editorModal.querySelector('.fileEditormodal-content').classList.add('active');
+
+            setTimeout(() => {
+                // Initialize Ace Editor
+                const editor = ace.edit(editorElement);
+                editor.session.setValue(result.content);
+                editor.setTheme("ace/theme/chrome");  // Set to light theme
+                editor.session.setMode("ace/mode/text");
+
+                // Custom styling for the editor
+                editor.container.style.border = "1px solid black";  // Black border
+                editor.container.style.backgroundColor = "white";  // White background
+                editor.container.style.color = "black";  // Black text color
+                editor.container.style.borderRadius = "4px";  // Rounded corners
+
+                // Explicitly focus the editor after initializing it
+                editor.container.focus();
+                editor.focus();
+
+                // Ensure focus is retained
+                function retainFocus() {
+                    setTimeout(() => {
+                        editor.focus();
+                    }, 100);
+                }
+                
+                // Attach focus handlers
+                editor.container.addEventListener('click', retainFocus);
+                window.addEventListener('focus', retainFocus);
+
+                saveButton.onclick = function() {
+                    saveFile(path, editor.session.getValue());
+                };
+
+                span.onclick = function() {
+                    closeModal('fileEditorModal');
+                    window.removeEventListener('focus', retainFocus);  // Clean up event listener
+                };
+
+                window.onclick = function(event) {
+                    if (event.target === editorModal) {
+                        closeModal('fileEditorModal');
+                        window.removeEventListener('focus', retainFocus);  // Clean up event listener
+                    }
+                };
+
+                // Ensure the editor gains focus after some delay
+                setTimeout(() => {
+                    editor.focus();
+                }, 300);
+            }, 100);  // Adjust the delay time as needed
+        } else {
+            console.error('Failed to read file:', result.message);
+            alert('Failed to read the file: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error reading file:', error);
+        alert('An error occurred while trying to read the file.');
+    }
+}
+
+
+// Handle visibility change to re-focus the editor
+document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'visible') {
+        const editor = ace.edit('editor');
+        editor.renderer.updateFull();  // Refresh the editor when the document becomes visible
+        editor.focus();  // Ensure the editor gains focus when visibility changes
+    }
+});
+
+// Ensure the Ace Editor retains focus when the window is refocused
+window.addEventListener('focus', () => {
+    const editor = ace.edit('editor');
+    if (editor) {
+        editor.focus();
+    }
+});
+
+
+async function saveFile(path, content) {
+    try {
+        const result = await window.api.invoke('save-file', { path, content });
+        if (result.success) {
+            alert('File saved successfully!');
+            closeModal('fileEditorModal');
+        } else {
+            console.error('Failed to save file:', result.message);
+            alert('Failed to save the file: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error saving file:', error);
+        alert('An error occurred while trying to save the file.');
+    }
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        const modalContent = modal.querySelector('.modal-content, .editFilesmodal-content, .fileEditormodal-content, .editConfirmationmodal-content');
+        if (modalContent) {
+            modalContent.classList.remove('active');
+            setTimeout(() => {
+                modal.style.display = "none";
+            }, 300);
+        } else {
+            console.error('Modal content not found');
+        }
+    } else {
+        console.error('Modal not found');
+    }
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('selectFolderButton').onclick = function() {
+        openFileExplorer();
+    };
+});
+
+
 
 async function handleModifyClick(){
 
 }
-
-

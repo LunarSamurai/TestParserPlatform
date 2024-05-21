@@ -271,7 +271,7 @@ ipcMain.handle('view-files', async (event) => {
         console.error('Failed to read Resources directory:', error);
         return { success: false, message: 'Failed to read Resources directory' };
     }
-});
+}); 
 
 
 
@@ -361,6 +361,34 @@ ipcMain.handle('upload-file', async (event, { sourcePaths, destinationFolder }) 
         return { success: true, results };
     } catch (error) {
         console.error('Failed to upload files:', error);
+        return { success: false, message: error.message };
+    }
+});
+
+ipcMain.handle('read-file', async (event, filePath) => {
+    console.log('Received file path:', filePath);  // Debug log
+
+    if (typeof filePath !== 'string' || filePath.trim() === '') {
+        console.error('Invalid file path received:', filePath);  // Debug log
+        return { success: false, message: 'Invalid file path' };
+    }
+
+    try {
+        const content = await fs.promises.readFile(filePath, 'utf-8');
+        return { success: true, content };
+    } catch (error) {
+        console.error('Failed to read file:', error);
+        return { success: false, message: error.message };
+    }
+});
+
+
+ipcMain.handle('save-file', async (event, { path, content }) => {
+    try {
+        await fs.promises.writeFile(path, content, 'utf-8');
+        return { success: true };
+    } catch (error) {
+        console.error('Failed to save file:', error);
         return { success: false, message: error.message };
     }
 });
