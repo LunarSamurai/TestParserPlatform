@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" href="../../css/optionsService.css"> <!-- Adjust the path as necessary -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div id="particles-js"></div>
+    <div class="container">
+        <div class="sidebar">
+            <ul class="sidebar-menu">
+                <li><a href="#" id="home" onmouseover="triggerParticles('home')"><i class="fas fa-home"></i><span>Home</span></a></li>
+                <li><a href="#" id="manage" onmouseover="triggerParticles('manage')"><i class="fas fa-tasks"></i><span>Manage</span></a></li>
+                <li><a href="#" id="arrange" onmouseover="triggerParticles('arrange')"><i class="fas fa-random"></i><span>Arrange</span></a></li>
+                <li><a href="#" id="create" onmouseover="triggerParticles('create')"><i class="fas fa-plus-circle"></i><span>Create</span></a></li>
+                <li><a href="#" id="support" onmouseover="triggerParticles('support')"><i class="fas fa-life-ring"></i><span>Support</span></a></li>
+            </ul>
+            <ul class="sidebar-footer">
+                <li><a href="#" id="return" onclick="handleHomeClick()" onmouseover="triggerParticles('return')"><i class="fas fa-times-circle"></i><span>Return</span></a></li>
+            </ul>
+        </div>        
+        <div class="content">
+            <div class="image-container">
+                <h1>Army Research Institute Programming Unit</h1>
+                <p>Thank you for choosing to use my program.</p>
+                <p>Design by Joseph Craig</p>
+            </div>
+            <div class="text-container">
+                <p>This was a bunch of fun to build. I understand that my time was cut short however, if at all it is possible to continue this project the following will be added:</p>
+                <ul>
+                    <li><strong>Dynamic Mapping:</strong>
+                        <ul>
+                            <li>Tests will be able to be created, meaning that you will be able to create new kinds of tests.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Modular Pathing:</strong>
+                        <ul>
+                            <li>Tests will no longer go in a linear path, instead in this screen here you will be able to modify the order in which exams and parts go in.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Live View:</strong>
+                        <ul>
+                            <li>Examiners will be able to view when exams are being taken as well as get push notifications when an exam is completed.</li>
+                        </ul>
+                    </li>
+                    <li><strong>Much Much more!</strong></li>
+                </ul>
+                <p>Thank you for having me!</p>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <div id="modal-text"></div>
+        </div>
+    </div>
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script src="optionsService.js"></script>
+</body>
+</html>

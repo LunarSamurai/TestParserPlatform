@@ -28,7 +28,7 @@ function createWindow() {
     mainWindow.loadFile('index.html');
 
     // Open the DevTools.
-    mainWindow.webContents.openDevTools();
+    //mainWindow.webContents.openDevTools();
 }
 
 
@@ -82,8 +82,12 @@ ipcMain.on('action', (event, action) => {
             }
             break;
         case 'options':
-            console.log('Opening options...');
-            // Implement opening options
+            console.log('Options Webpage');
+            if (mainWindow) {
+                mainWindow.loadFile('Services/Options/optionsService.html'); // Load test.html in mainWindow
+            } else {
+                console.error('The mainWindow is not initialized.');
+            }
             break;
     }
 });
@@ -393,6 +397,21 @@ ipcMain.handle('save-file', async (event, { path, content }) => {
     }
 });
 
+ipcMain.handle('delete-multiple-items', async (event, filePaths) => {
+    try {
+        await Promise.all(filePaths.map(async (filePath) => {
+            try {
+                await fs.promises.unlink(filePath);
+            } catch (error) {
+                console.error(`Error deleting file ${filePath}:`, error);
+            }
+        }));
+        return { success: true, message: 'Selected files have been deleted.' };
+    } catch (error) {
+        console.error('Failed to delete files:', error);
+        return { success: false, message: error.message };
+    }
+});
 
 // Quit when all windows are closed, except on macOS. There,
 // it's common for applications and their menu bar to stay active

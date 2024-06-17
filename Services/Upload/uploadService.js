@@ -602,6 +602,109 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-async function handleModifyClick(){
-
+async function handleModifyClick() {
+    try {
+        const result = await window.api.invoke('view-files');
+        if (result.success && Array.isArray(result.data)) {
+            displayModifyModal(buildModifyDirectoryTreeHtml(result.data));
+        } else {
+            console.error('Failed to retrieve files:', result.message || 'result object is missing expected properties or is not an array');
+            alert('Failed to retrieve files: ' + result.message);
+        }
+    } catch (error) {
+        console.error('Error retrieving files:', error);
+        alert('An error occurred while trying to retrieve files.');
+    }
 }
+
+function buildModifyDirectoryTreeHtml(data) {
+    if (!Array.isArray(data)) {
+        console.error('Expected data to be an array, received:', data);
+        return '<p>Error: Data is not an array.</p>';
+    }
+
+    let html = '';
+    data.forEach(folder => {
+        const folderPath = folder.path.replace(/\\/g, '\\\\');
+        html += `<div class="folder-name" data-path="${folderPath}">${folder.folder}</div><ul>`;
+        folder.files.forEach(file => {
+            const fullPath = `${folder.path}\\${file}`.replace(/\\/g, '\\\\');
+            html += `<li><input type="checkbox" class="file-checkbox" data-path="${fullPath}"><span class="file-name" data-path="${fullPath}">${file}</span></li>`;
+        });
+        html += '</ul>'; // Close the folder's file list UL
+    });
+    return html;
+}
+
+function displayModifyModal(htmlContent) {
+    const modal = document.getElementById('modifyFilesModal');
+    const directoryTreeElement = document.getElementById('modifyDirectoryTree');
+    const deleteButton = document.getElementById('deleteSelectedFilesButton');
+    const span = modal.querySelector('.close');
+
+    directoryTreeElement.innerHTML = htmlContent;
+
+    modal.style.display = "flex";
+    modal.querySelector('.modifyFilesmodal-content').classList.add('active');
+
+    span.onclick = function() {
+        closeModal('modifyFilesModal');
+    };
+
+    window.onclick = function(event) {
+        if (event.target === modal) {
+            closeModal('modifyFilesModal');
+        }
+    };
+
+    deleteButton.onclick = async function() {
+        const selectedPaths = Array.from(document.querySelectorAll('.file-checkbox:checked')).map(cb => cb.getAttribute('data-path'));
+        if (selectedPaths.length > 0) {
+            const confirmation = confirm('Are you sure you want to delete the selected files?');
+            if (confirmation) {
+                try {
+                    const result = await window.api.invoke('delete-multiple-items', selectedPaths);
+                    if (result.success) {
+                        alert('Files deleted successfully!');
+                        closeModal('modifyFilesModal');
+                    } else {
+                        console.error('Failed to delete files:', result.message);
+                        alert('Failed to delete files: ' + result.message);
+                    }
+                } catch (error) {
+                    console.error('Error deleting files:', error);
+                    alert('An error occurred while trying to delete the files.');
+                }
+            }
+        } else {
+            alert('Please select at least one file to delete.');
+        }
+    };
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        const modalContent = modal.querySelector('.modal-content, .modifyFilesmodal-content');
+        if (modalContent) {
+            modalContent.classList.remove('active');
+            setTimeout(() => {
+                modal.style.display = "none";
+            }, 300);
+        } else {
+            console.error('Modal content not found');
+        }
+    } else {
+        console.error('Modal not found');
+    }
+}
+
+// Add event listener to trigger handleModifyClick when needed
+document.getElementById('modifyFilesButton').addEventListener('click', handleModifyClick);
+
+
+document.addEventListener('DOMContentLoaded', function() {
+    document.getElementById('selectFolderButton').onclick = function() {
+        openFileExplorer();
+    };
+});
